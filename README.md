@@ -10,6 +10,10 @@ I just got a VR headset. I want to make stuff for it.
 
 2. [Learn valuable new skills](https://aframe.io/docs/0.4.0/introduction/getting-started.html)
 
+## Contents
+
+1. [basicScene](/basicScene): sky, ground, audio. Add entities, transformations, animations. Text.
+
 ## How To
 
 files need to be run from a server:
