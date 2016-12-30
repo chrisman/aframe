@@ -12,7 +12,17 @@ I just got a VR headset. I want to make stuff for it.
 
 ## Contents
 
-1. [basicScene](/basicScene): sky, ground, audio. Add entities, transformations, animations. Text.
+1. [basicScene](/basicScene)
+
+  * Build: a basic scene with animations.
+  
+  * Use: Sky, ground, audio. Add entities, transformations, animations. Text.
+
+2. [components](/components)
+
+  * Build: a 360° Image Viewer.
+  
+  * Use: 3rd-party component ecosystem (kframe): templates, templates with data attributes, layout component, event-set component. Fuse cursor for cardboard-friendly gaze control.
 
 ## How To
 
