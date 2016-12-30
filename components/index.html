@@ -3,10 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title></title>
-  <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
+  <script src="lib/aframe.min.js"></script>
   <script src="lib/kframe.min.js"></script>
   <script>
 const a = AFRAME;
+
+a.registerComponent('update-raycaster', {
+  schema: {
+    type: 'selector'
+  },
+
+  init: function () {
+    var raycasterEl = this.data;
+    raycasterEl.components.raycaster.refreshObjects();
+  }
+});
 
 a.registerComponent('set-image', {
   schema: {
@@ -15,10 +26,7 @@ a.registerComponent('set-image', {
     src: {type: 'string'},
     dur: {type: 'number', default: 300}
   },
-  setupFadeAnimation: function(){
-    // TODO
-    // Appends an <a-animation> that fades to black.
-  },
+
   init: function(){
     const d = this.data;
     const e = this.el;
@@ -33,13 +41,36 @@ a.registerComponent('set-image', {
         d.target.setAttribute('material', 'src', d.src);
       }, d.dur);
     });
+  },
+
+  setupFadeAnimation: function() {
+    const data   = this.data;
+    const target = this.data.target;
+
+    // Only set up once.
+    if (target.dataset.setImageFadeSetup)
+      return;
+    else
+      target.dataset.setImageFadeSetup = true;
+
+    // Create animation.
+    target.setAttribute('animation__fade', {
+      property    : 'material.color',
+      startEvents : 'set-image-fade',
+      dir         : 'alternate',
+      dur         : data.dur,
+      from        : '#FFF',
+      to          : '#000'
+    });
   }
+
 });
   </script>
 </head>
 <body>
 <a-scene>
   <a-assets>
+    <!-- Templates //-->
     <script id="plane" type="text/nunjucks">
       <a-plane
         class="link" height="1" width="1"
@@ -49,10 +80,14 @@ a.registerComponent('set-image', {
         event-set__2="_event: mouseup; scale: 1.2 1.2 1"
         event-set__3="_event: mouseenter; scale: 1.2 1.2 1"
         event-set__4="_event: mouseleave; scale: 1 1 1"
+        set-image="on: click; src: {{ src }}; target: #image-360"
+        update-raycaster="#cursor"
       ></a-plane>
     </script>
+
     <!-- Sounds -->
     <audio id="click-sound" src="audio/click.mp3"></audio>
+
     <!-- Images. -->
     <img id="city" src="img/city.jpg">
     <img id="city-thumb" src="img/city_thumb.png">
@@ -67,30 +102,18 @@ a.registerComponent('set-image', {
 
   <!-- Links. -->
   <a-entity id="links" layout="layout: line; margin: 1.5" position="-3 -1 -4">
-    <a-entity
-      template="src: #plane"
-      data-thumb="#city-thumb"
-      set-image="on: click; src: #city; target: #image-360"
-    ></a-entity>
-    <a-entity
-      template="src: #plane"
-      data-thumb="#bridge-thumb"
-      set-image="on: click; src: #bridge; target: #image-360"
-    ></a-entity>
-    <a-entity
-      template="src: #plane"
-      data-thumb="#lake-thumb"
-      set-image="on: click; src: #lake; target: #image-360"
-    ></a-entity>
+    <a-entity template="src: #plane" data-thumb="#city-thumb" data-src="#city" ></a-entity>
+    <a-entity template="src: #plane" data-thumb="#bridge-thumb" data-src="#bridge" ></a-entity>
+    <a-entity template="src: #plane" data-thumb="#lake-thumb" data-src="#lake" ></a-entity>
   </a-entity>
 
   <!-- Camera + Cursor. -->
   <a-camera>
-    <a-cursor id="cursor" fuse="true" raycaster="objects: .link">
-      <a-animation begin="click" easing="ease-in" attribute="scale"
-                   fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
-      <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
-                   from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-animation>
+    <a-cursor id="cursor" fuse="true" raycaster="objects: .link"
+      animation__click="property: scale; startEvents: fusing; to: 0.1 0.1 0.1; from: 1 1 1; dur: 1500"
+      animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 800"
+      event-set__1="_event: mouseenter; color: springgreen"
+      event-set__2="_event: mouseleave; color: black; scale: 1 1 1;">
     </a-cursor>
   </a-camera>
 </a-scene>

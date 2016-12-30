@@ -16,13 +16,13 @@ I just got a VR headset. I want to make stuff for it.
 
   * Build: a basic scene with animations.
   
-  * Use: Sky, ground, audio. Add entities, transformations, animations. Text.
+  * Use: Sky, ground, audio. Add entities, transformations, animations. Text via 3rd party component.
 
 2. [components](/components)
 
   * Build: a 360° Image Viewer.
   
-  * Use: 3rd-party component ecosystem (kframe): templates, templates with data attributes, layout component, event-set component. Fuse cursor for cardboard-friendly gaze control.
+  * Use: [3rd-party component ecosystem](https://github.com/aframevr/awesome-aframe#components) ([kframe](https://github.com/ngokevin/kframe/)): templates, templates with data attributes, layout component. event-set component. Fuse cursor for cardboard-friendly gaze control.
 
 ## How To
 
